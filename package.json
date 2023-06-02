@@ -24,7 +24,8 @@
   },
   "scripts": {
     "lint": "eslint . --ext .mjs --ext .cjs",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "prepare": "husky install"
   },
   "dependencies": {
     "chalk": "^5.2.0",
@@ -48,5 +49,8 @@
   },
   "files": [
     "index.mjs"
-  ]
+  ],
+  "exports": {
+    ".": "./index.mjs"
+  }
 }
