@@ -1,15 +1,13 @@
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
+.DS_Store
 
-pids
-logs
-results
+**/node_modules/*
+**/npm-debug.log
 
-npm-debug.log
-node_modules
+# User-defined NPM configuration
+.npmrc
+
+# User-defined NVM configuration
+.nvmrc
+
+# Deps
+.depsrc
