@@ -12,14 +12,14 @@ import vinylSourceMaps from 'vinyl-sourcemaps-apply'
 const PLUGIN_NAME = 'gulp-sass'
 
 const MISSING_COMPILER_MESSAGE = `
-gulp-sass no longer has a default Sass compiler; please set one yourself.
+gulp-sass no longer has a default Sass compiler. Please install one.
 Both the "sass" and "node-sass" packages are permitted.
 For example, in your gulpfile:
 
-  import sass from 'sass'
-  import gulpSass from 'gulp-sass'
+  import dartSass from 'sass'
+  import gulpSass from '@sequencemedia/gulp-sass
 
-  gulpSass(sass)
+  const sass = gulpSass(dartSass)
 `
 const STREAMING_NOT_SUPPORTED_MESSAGE = 'Streaming not supported'
 
