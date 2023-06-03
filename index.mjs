@@ -1,7 +1,7 @@
-import path from 'path'
+import path from 'node:path'
 import {
   Transform
-} from 'stream'
+} from 'node:stream'
 import chalk from 'chalk'
 import PluginError from 'plugin-error'
 import replaceExtension from 'replace-ext'
@@ -9,7 +9,7 @@ import stripAnsi from 'strip-ansi'
 import cloneDeep from 'lodash.clonedeep'
 import vinylSourceMaps from 'vinyl-sourcemaps-apply'
 
-const PLUGIN_NAME = 'gulp-sass'
+const PLUGIN_NAME = '@sequencemedia/gulp-sass'
 
 const MISSING_COMPILER_MESSAGE = `
 gulp-sass no longer has a default Sass compiler. Please install one.
@@ -17,22 +17,20 @@ Both the "sass" and "node-sass" packages are permitted.
 For example, in your gulpfile:
 
   import dartSass from 'sass'
-  import gulpSass from '@sequencemedia/gulp-sass
+  import gulpSass from '${PLUGIN_NAME}'
 
   const sass = gulpSass(dartSass)
 `
 const STREAMING_NOT_SUPPORTED_MESSAGE = 'Streaming not supported'
 
-const streamTransform = (transform) => new Transform({ transform, objectMode: true })
-
 /**
  * Handles returning the file to the stream
  */
-function filePush (file, sassObject, done) {
+function filePush (file, sass, done) {
   // Build Source Maps!
-  if (sassObject.map) {
+  if (sass.map) {
     // Transform map into JSON
-    const sassMap = JSON.parse(sassObject.map.toString())
+    const sassMap = JSON.parse(sass.map.toString())
     // Grab the stdout and transform it into stdin
     const sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin')
     // Grab the base filename that's being worked on
@@ -60,7 +58,7 @@ function filePush (file, sassObject, done) {
     vinylSourceMaps(file, sassMap)
   }
 
-  file.contents = sassObject.css
+  file.contents = sass.css
   file.path = replaceExtension(file.path, '.css')
 
   if (file.stat) {
@@ -83,16 +81,11 @@ function handleError (error, file, done) {
   error.message = stripAnsi(message)
   error.relativePath = relativePath
 
-  return done(new PluginError(PLUGIN_NAME, error))
+  done(new PluginError(PLUGIN_NAME, error))
 }
 
-/**
- * Main Gulp Sass function
- */
-
-// eslint-disable-next-line arrow-body-style
-function gulpSass (options, sync) {
-  return streamTransform((file, encoding, done) => {
+function getTransformFor (options, sync) {
+  return function transform (file, encoding, done) {
     if (file.isNull()) {
       done(null, file)
       return
@@ -147,13 +140,13 @@ function gulpSass (options, sync) {
       /**
        * Async Sass render
        */
-      gulpSass.compiler.render(opts, (error, obj) => {
+      gulpSass.compiler.render(opts, (error, sass) => {
         if (error) {
           handleError(error, file, done)
           return
         }
 
-        filePush(file, obj, done)
+        filePush(file, sass, done)
       })
     } else {
       /**
@@ -165,13 +158,22 @@ function gulpSass (options, sync) {
         handleError(error, file, done)
       }
     }
-  })
+  }
+}
+
+// eslint-disable-next-line arrow-body-style
+function gulpSass (options, sync = false) {
+  const transform = getTransformFor(options, sync)
+
+  return new Transform({ transform, objectMode: true })
 }
 
 /**
  * Sync Sass render
  */
-gulpSass.sync = (options) => gulpSass(options, true)
+gulpSass.sync = function sync (options) {
+  return gulpSass(options, true)
+}
 
 /**
  * Log errors nicely
