@@ -16,7 +16,7 @@ gulp-sass no longer has a default Sass compiler. Please install one.
 Both the "sass" and "node-sass" packages are permitted.
 For example, in your gulpfile:
 
-  import dartSass from 'sass'
+  import * as dartSass from 'sass'
   import gulpSass from '${PLUGIN_NAME}'
 
   const sass = gulpSass(dartSass)
