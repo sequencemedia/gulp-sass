@@ -161,7 +161,6 @@ function getTransformFor (options, sync) {
   }
 }
 
-// eslint-disable-next-line arrow-body-style
 function gulpSass (options, sync = false) {
   const transform = getTransformFor(options, sync)
 
