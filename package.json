@@ -1,6 +1,6 @@
 {
   "name": "@sequencemedia/gulp-sass",
-  "version": "1.0.155",
+  "version": "1.0.156",
   "description": "SASS for Gulp",
   "keywords": [
     "gulp plugin",
