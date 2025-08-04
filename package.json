@@ -32,7 +32,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "chalk": "^5.4.1",
+    "chalk": "^5.5.0",
     "lodash.clonedeep": "^4.5.0",
     "plugin-error": "^2.0.1",
     "replace-ext": "^2.0.0",
